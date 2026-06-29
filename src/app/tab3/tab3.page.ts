@@ -5,6 +5,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { lockClosed, lockOpen } from 'ionicons/icons';
+import { Stripe } from '@capacitor-community/stripe';
 import { PhotoService } from '../core/services/photo.service';
 import { PaymentService } from '../core/services/payment.service';
 
@@ -20,6 +21,8 @@ import { PaymentService } from '../core/services/payment.service';
 export class Tab3Page implements OnInit {
   photoService = inject(PhotoService);
   private paymentService = inject(PaymentService);
+  /** Google Pay n'est disponible que sur Android (avec Google Pay configuré). */
+  protected googlePayAvailable = false;
 
   constructor() {
     addIcons({ lockClosed, lockOpen });
@@ -27,6 +30,13 @@ export class Tab3Page implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.photoService.loadSaved();
+    try {
+      await Stripe.isGooglePayAvailable();
+      this.googlePayAvailable = true;
+    } catch {
+      // Web / iOS / Android sans Google Pay → on masque le bouton (createGooglePay y planterait).
+      this.googlePayAvailable = false;
+    }
   }
 
   async buyPhoto(filepath: string): Promise<void> {

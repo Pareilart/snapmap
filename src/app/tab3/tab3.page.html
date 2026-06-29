@@ -16,9 +16,11 @@
               <div class="overlay">
                 <ion-icon name="lock-closed"></ion-icon>
                 <ion-button (click)="buyPhoto(photo.filepath)">Acheter 5 € (CB)</ion-button>
-                <ion-button (click)="buyPhotoWithGooglePay(photo.filepath)" color="dark">
-                  Google Pay
-                </ion-button>
+                @if (googlePayAvailable) {
+                  <ion-button (click)="buyPhotoWithGooglePay(photo.filepath)" color="dark">
+                    Google Pay
+                  </ion-button>
+                }
               </div>
             } @else {
               <ion-icon name="lock-open" class="unlocked-badge"></ion-icon>
