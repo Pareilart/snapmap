@@ -1,0 +1,21 @@
+.map-ctn {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+.loading-ctn {
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--ion-background-color, #fff);
+}

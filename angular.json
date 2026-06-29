@@ -39,10 +39,16 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
+              },
+              {
+                "glob": "*.png",
+                "input": "node_modules/leaflet/dist/images",
+                "output": "assets/leaflet"
               }
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
             "scripts": [],
+            "allowedCommonJsDependencies": ["leaflet"],
             "browser": "src/main.ts"
           },
           "configurations": {
