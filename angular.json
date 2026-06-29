@@ -44,6 +44,11 @@
                 "glob": "*.png",
                 "input": "node_modules/leaflet/dist/images",
                 "output": "assets/leaflet"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/stripe-pwa-elements/dist/stripe-elements",
+                "output": "assets/stripe-pwa-elements"
               }
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
@@ -141,7 +146,10 @@
     }
   },
   "cli": {
-    "schematicCollections": ["@ionic/angular-toolkit"]
+    "schematicCollections": [
+      "@ionic/angular-toolkit"
+    ],
+    "analytics": "c4171b32-fb1d-4125-a6e6-d724b15c05e0"
   },
   "schematics": {
     "@ionic/angular-toolkit:component": {

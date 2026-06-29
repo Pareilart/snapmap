@@ -17,6 +17,10 @@
   <!-- add to homescreen for ios -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+  <!-- Stripe PWA Elements (PaymentSheet sur navigateur). Auto-enregistrement + auto-localisation
+       de ses chunks → fonctionne sous esbuild, contrairement au loader importé dans le bundle. -->
+  <script type="module" src="assets/stripe-pwa-elements/stripe-elements.esm.js"></script>
 </head>
 
 <body>

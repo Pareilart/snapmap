@@ -51,5 +51,10 @@
 	<string>Pour prendre vos selfies.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Pour géolocaliser vos selfies et les afficher sur la carte.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

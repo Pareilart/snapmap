@@ -1,17 +1,31 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
+    <ion-title>Boutique</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-grid>
+    <ion-row>
+      @for (photo of photoService.photos; track photo.filepath) {
+        <ion-col size="6">
+          <div class="photo-card" [class.locked]="!photo.purchased">
+            <img [src]="photo.webviewPath" />
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+            @if (!photo.purchased) {
+              <div class="overlay">
+                <ion-icon name="lock-closed"></ion-icon>
+                <ion-button (click)="buyPhoto(photo.filepath)">Acheter 5 € (CB)</ion-button>
+                <ion-button (click)="buyPhotoWithGooglePay(photo.filepath)" color="dark">
+                  Google Pay
+                </ion-button>
+              </div>
+            } @else {
+              <ion-icon name="lock-open" class="unlocked-badge"></ion-icon>
+            }
+          </div>
+        </ion-col>
+      }
+    </ion-row>
+  </ion-grid>
 </ion-content>

@@ -3,6 +3,7 @@ import { Camera, CameraDirection } from '@capacitor/camera';
 import type { MediaResult } from '@capacitor/camera';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Preferences } from '@capacitor/preferences';
+import { Capacitor } from '@capacitor/core';
 import type { UserPhoto } from '../models';
 
 @Injectable({ providedIn: 'root' })
@@ -44,9 +45,18 @@ export class PhotoService {
     this.photos = loaded;
   }
 
+  /** Marque une photo comme achetée (après paiement Stripe) et persiste. */
+  public async markAsPurchased(filepath: string): Promise<void> {
+    const photo = this.photos.find((p) => p.filepath === filepath);
+    if (photo) {
+      photo.purchased = true;
+      await this.persist();
+    }
+  }
+
   /** blob:// → base64 → écriture disque ; retourne un UserPhoto persistable. */
   private async savePhoto(cameraPhoto: MediaResult): Promise<UserPhoto> {
-    const base64Data = await this.readAsBase64(cameraPhoto);
+    const base64Data = await this.readAsBase64(cameraPhoto); // base64 BRUT (sans préfixe data:)
     const fileName = `${new Date().getTime()}.jpeg`;
 
     await Filesystem.writeFile({
@@ -57,17 +67,25 @@ export class PhotoService {
 
     return {
       filepath: fileName,
-      webviewPath: base64Data,
+      webviewPath: `data:image/jpeg;base64,${base64Data}`,
       purchased: false,
       liked: false,
       takenAt: new Date().toISOString(),
     };
   }
 
+  /** Photo en base64 BRUT (sans préfixe), gère le WEB et le NATIF. */
   private async readAsBase64(cameraPhoto: MediaResult): Promise<string> {
-    const response = await fetch(cameraPhoto.webPath!);
-    const blob = await response.blob();
-    return (await this.convertBlobToBase64(blob)) as string;
+    if (Capacitor.getPlatform() === 'web') {
+      // Web : webPath est une URL blob:// → fetch + FileReader
+      const response = await fetch(cameraPhoto.webPath!);
+      const blob = await response.blob();
+      const dataUrl = await this.convertBlobToBase64(blob);
+      return dataUrl.split(',')[1]; // retire "data:image/...;base64,"
+    }
+    // Natif (iOS/Android) : lire le fichier capturé via son uri
+    const file = await Filesystem.readFile({ path: cameraPhoto.uri! });
+    return file.data as string;
   }
 
   private convertBlobToBase64 = (blob: Blob): Promise<string> =>
