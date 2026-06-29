@@ -47,5 +47,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Pour prendre vos selfies.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Pour géolocaliser vos selfies et les afficher sur la carte.</string>
 </dict>
 </plist>

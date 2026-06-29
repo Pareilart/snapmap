@@ -40,12 +40,14 @@ class CameraModal extends HTMLElement {
     this.video = document.createElement('video');
     this.video.autoplay = true;
     this.video.playsInline = true;
-    this.video.style.cssText = `flex: 1; width: 100%; object-fit: cover;`;
+    // min-height: 0 → laisse le flex réduire la vidéo pour que la barre de boutons reste visible
+    // (sinon, sur un écran large, la vidéo pousse les contrôles hors de l'écran).
+    this.video.style.cssText = `flex: 1; min-height: 0; width: 100%; object-fit: cover;`;
 
     const controls = document.createElement('div');
     controls.style.cssText = `
       display: flex; justify-content: space-around; align-items: center;
-      padding: 24px; background: #000;
+      padding: 24px; background: #000; flex-shrink: 0;
     `;
 
     const cancelBtn = this.makeButton('Annuler', '#fff', 'transparent');

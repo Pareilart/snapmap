@@ -10,8 +10,8 @@ export interface UserPhoto {
   webviewPath: string;
   purchased: boolean;
   liked: boolean;
-  lat: number;
-  lng: number;
+  lat?: number; // optionnel : la géoloc peut être refusée (Défi 5)
+  lng?: number;
   takenAt: string; // date ISO — new Date().toISOString()
   locationName?: string;
 }
