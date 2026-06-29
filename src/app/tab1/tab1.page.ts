@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton,
-  IonIcon, IonGrid, IonRow, IonCol, IonButton, IonSkeletonText, IonSpinner,
+  IonHeader, IonToolbar, IonContent, IonFab, IonFabButton,
+  IonIcon, IonSkeletonText, IonSpinner,
   ModalController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -15,8 +15,8 @@ import { PhotoViewerComponent } from '../shared/components/photo-viewer/photo-vi
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   imports: [
-    IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton,
-    IonIcon, IonGrid, IonRow, IonCol, IonButton, IonSkeletonText, IonSpinner,
+    IonHeader, IonToolbar, IonContent, IonFab, IonFabButton,
+    IonIcon, IonSkeletonText, IonSpinner,
   ],
 })
 export class Tab1Page implements OnInit {

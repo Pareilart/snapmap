@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, inject } from '@angular/core';
-import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonSpinner, ModalController,
-} from '@ionic/angular/standalone';
+import { IonContent, IonSpinner, IonIcon, ModalController } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { location } from 'ionicons/icons';
 import { GeolocationService } from '../core/services/geolocation.service';
 import { MapService } from '../core/services/map.service';
 import { PhotoService } from '../core/services/photo.service';
@@ -13,7 +13,7 @@ import type { UserPhoto } from '../core/models';
   selector: 'app-tab2',
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonSpinner],
+  imports: [IonContent, IonSpinner, IonIcon],
 })
 export class Tab2Page implements AfterViewInit {
   private geolocationService = inject(GeolocationService);
@@ -22,6 +22,10 @@ export class Tab2Page implements AfterViewInit {
   private feedback = inject(FeedbackService);
   private modalCtrl = inject(ModalController);
   protected mapLoaded = false;
+
+  constructor() {
+    addIcons({ location });
+  }
 
   async ngAfterViewInit(): Promise<void> {
     const position = await this.geolocationService.getCurrentPosition();

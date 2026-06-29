@@ -1,6 +1,6 @@
-<ion-header [translucent]="true">
+<ion-header class="app-header" [translucent]="true">
   <ion-toolbar>
-    <ion-title>Mes selfies</ion-title>
+    <span class="wordmark brand-text" slot="start">SnapMap</span>
     <div slot="end" class="likes-stat" aria-label="Nombre total de likes">
       <ion-icon name="heart"></ion-icon>
       <span>{{ photoService.totalLikes }}</span>
@@ -9,77 +9,59 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Mes selfies</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-grid>
-    <ion-row>
-      <!-- Défi 4 — chargement initial : grille de squelettes -->
-      @if (galleryLoading) {
-        @for (s of skeletons; track s) {
-          <ion-col size="6">
-            <div class="photo-tile">
-              <ion-skeleton-text [animated]="true" class="skeleton-fill"></ion-skeleton-text>
-            </div>
-          </ion-col>
-        }
-      } @else {
-        <!-- Défi 4 — capture en cours : carte squelette + loader en tête de grille -->
-        @if (processing) {
-          <ion-col size="6">
-            <div class="photo-tile">
-              <ion-skeleton-text [animated]="true" class="skeleton-fill"></ion-skeleton-text>
-              <ion-spinner class="tile-spinner" name="crescent"></ion-spinner>
-            </div>
-          </ion-col>
-        }
+  <!-- Défi 4 — chargement initial : grille de squelettes -->
+  @if (galleryLoading) {
+    <div class="photo-grid">
+      @for (s of skeletons; track s) {
+        <div class="photo-tile">
+          <ion-skeleton-text [animated]="true" class="skeleton-fill"></ion-skeleton-text>
+        </div>
+      }
+    </div>
+  } @else if (!processing && photoService.photos.length === 0) {
+    <!-- Défi 4 — état vide -->
+    <div class="empty-state">
+      <div class="empty-badge"><ion-icon name="camera"></ion-icon></div>
+      <h2>Aucun selfie</h2>
+      <p>Touchez le bouton caméra pour capturer votre premier moment.</p>
+    </div>
+  } @else {
+    <div class="photo-grid">
+      <!-- Défi 4 — capture en cours : carte squelette + loader -->
+      @if (processing) {
+        <div class="photo-tile">
+          <ion-skeleton-text [animated]="true" class="skeleton-fill"></ion-skeleton-text>
+          <ion-spinner class="tile-spinner" name="crescent"></ion-spinner>
+        </div>
+      }
 
       @for (photo of photoService.photos; track photo.filepath) {
-        <ion-col size="6">
-          <div class="photo-tile">
-            <img [src]="photo.webviewPath" alt="Selfie" (click)="openViewer($index)" />
+        <div class="photo-tile" (click)="openViewer($index)">
+          <img [src]="photo.webviewPath" alt="Selfie" />
+          <div class="tile-scrim"></div>
 
-            <ion-button
-              class="action like"
-              fill="clear"
-              (click)="toggleLike(photo.filepath)"
-              [attr.aria-label]="photo.liked ? 'Retirer le like' : 'Liker'">
-              <ion-icon
-                slot="icon-only"
-                [name]="photo.liked ? 'heart' : 'heart-outline'"
-                [color]="photo.liked ? 'danger' : 'light'">
-              </ion-icon>
-            </ion-button>
+          <button
+            class="tile-btn like"
+            (click)="toggleLike(photo.filepath); $event.stopPropagation()"
+            [attr.aria-label]="photo.liked ? 'Retirer le like' : 'Liker'">
+            <ion-icon
+              [name]="photo.liked ? 'heart' : 'heart-outline'"
+              [class.is-liked]="photo.liked"></ion-icon>
+          </button>
 
-            <ion-button
-              class="action delete"
-              fill="clear"
-              (click)="confirmDelete(photo.filepath)"
-              aria-label="Supprimer la photo">
-              <ion-icon slot="icon-only" name="trash" color="light"></ion-icon>
-            </ion-button>
-          </div>
-        </ion-col>
+          <button
+            class="tile-btn delete"
+            (click)="confirmDelete(photo.filepath); $event.stopPropagation()"
+            aria-label="Supprimer la photo">
+            <ion-icon name="trash"></ion-icon>
+          </button>
+        </div>
       }
-
-        <!-- Défi 4 — état vide explicite quand la galerie est chargée mais sans photo -->
-        @if (!processing && photoService.photos.length === 0) {
-          <ion-col size="12">
-            <div class="empty-state">
-              <ion-icon name="camera"></ion-icon>
-              <p class="tracking-wide">Aucun selfie pour le moment.<br />Touchez le bouton caméra pour commencer.</p>
-            </div>
-          </ion-col>
-        }
-      }
-    </ion-row>
-  </ion-grid>
+    </div>
+  }
 
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button (click)="takePhoto()">
+    <ion-fab-button class="capture-fab" (click)="takePhoto()" aria-label="Prendre un selfie">
       <ion-icon name="camera"></ion-icon>
     </ion-fab-button>
   </ion-fab>

@@ -29,17 +29,19 @@ export class MapService {
 
   map: L.Map | undefined;
   private photoCluster: L.MarkerClusterGroup | undefined;
-  private readonly tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-  private readonly attribution = '© OpenStreetMap contributors';
+  // Tuiles SOMBRES (CARTO dark matter) → rendu immersif "Snap Map". Gratuit, sans clé.
+  private readonly tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+  private readonly attribution = '© OpenStreetMap · © CARTO';
 
   /** Initialise la carte centrée sur (lat, lng) et y pose un marqueur. */
   initMap(container: string, lat: number, lng: number): Promise<void> {
     return new Promise((resolve) => {
-      this.map = L.map(container).setView([lat, lng], 13);
+      this.map = L.map(container, { zoomControl: false }).setView([lat, lng], 13);
 
       L.tileLayer(this.tileUrl, {
         attribution: this.attribution,
-        maxZoom: 19,
+        maxZoom: 20,
+        subdomains: 'abcd',
       }).addTo(this.map);
 
       this.addMarker(lat, lng);

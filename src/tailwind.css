@@ -16,3 +16,18 @@
 
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
+
+/* Tokens de marque SnapMap exposés comme utilitaires Tailwind
+   (bg-surface, text-brand-pink, border-hairline, font-display, ...). */
+@theme {
+  --color-ink: #0b0b0f;
+  --color-surface: #16161c;
+  --color-surface2: #20202a;
+  --color-hairline: rgba(255, 255, 255, 0.08);
+  --color-dim: #9a9aa7;
+  --color-brand-purple: #833ab4;
+  --color-brand-pink: #e1306c;
+  --color-brand-orange: #f77737;
+  --color-snap: #fffc00;
+  --font-display: "Plus Jakarta Sans", sans-serif;
+}

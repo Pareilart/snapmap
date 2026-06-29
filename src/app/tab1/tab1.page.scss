@@ -1,8 +1,54 @@
+// =============================================================================
+// Tab1 — Galerie "Selfies" (Défi 6, UI immersive style Instagram/Snapchat)
+// =============================================================================
+
+// --- Header de marque --------------------------------------------------------
+.app-header ion-toolbar {
+  --min-height: 56px;
+}
+
+.wordmark {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  padding-inline-start: 16px;
+}
+
+.likes-stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-inline-end: 14px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--app-hairline);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+
+  ion-icon {
+    font-size: 16px;
+    color: var(--brand-pink);
+  }
+}
+
+// --- Grille de photos --------------------------------------------------------
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 12px 12px 120px; // espace pour le FAB + tab bar
+}
+
 .photo-tile {
   position: relative;
-  border-radius: 10px;
+  border-radius: 18px;
   overflow: hidden;
   aspect-ratio: 1;
+  background: var(--app-surface);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  -webkit-tap-highlight-color: transparent;
 
   img {
     width: 100%;
@@ -11,80 +57,124 @@
     display: block;
   }
 
-  .action {
+  // Dégradé subtil bas → meilleure lisibilité + profondeur
+  .tile-scrim {
     position: absolute;
-    margin: 0;
-    height: 34px;
-    width: 34px;
-    --padding-start: 0;
-    --padding-end: 0;
-    --background: rgba(0, 0, 0, 0.4);
-    --border-radius: 50%;
-
-    ion-icon {
-      font-size: 18px;
-    }
-  }
-
-  .like {
-    top: 4px;
-    right: 4px;
-  }
-
-  .delete {
-    bottom: 4px;
-    right: 4px;
-  }
-
-  // Défi 4 — squelette occupant toute la tuile (chargement / capture en cours)
-  .skeleton-fill {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    border-radius: 10px;
-  }
-
-  // Loader centré par-dessus le squelette pendant la capture
-  .tile-spinner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    --color: var(--ion-color-medium);
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.35) 0%, transparent 38%);
+    pointer-events: none;
   }
 }
 
-// Compteur de likes total dans la barre de titre
-.likes-stat {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-inline-end: 12px;
-  color: var(--ion-color-danger);
-  font-weight: 600;
+// Boutons d'action ronds "verre dépoli"
+.tile-btn {
+  position: absolute;
+  top: 8px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
 
   ion-icon {
     font-size: 18px;
+    color: #fff;
+  }
+
+  &:active {
+    transform: scale(0.88);
+  }
+
+  &.like {
+    right: 8px;
+    ion-icon.is-liked {
+      color: var(--brand-pink);
+    }
+  }
+
+  &.delete {
+    left: 8px;
   }
 }
 
-// Défi 4 — état vide
+// Squelette (chargement / capture)
+.skeleton-fill {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 18px;
+}
+
+.tile-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  --color: var(--brand-pink);
+}
+
+// --- Bouton de capture (style Snapchat) --------------------------------------
+.capture-fab {
+  --background: transparent;
+  --background-activated: transparent;
+  --background-focused: transparent;
+  --box-shadow: 0 10px 28px rgba(225, 48, 108, 0.5);
+  width: 66px;
+  height: 66px;
+
+  &::part(native) {
+    background: var(--brand-gradient);
+    border: 3px solid rgba(255, 255, 255, 0.92);
+  }
+
+  ion-icon {
+    font-size: 27px;
+    color: #fff;
+  }
+}
+
+// --- État vide ---------------------------------------------------------------
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  color: var(--ion-color-medium);
-  padding: 48px 16px;
+  padding: 22vh 32px 0;
+  color: var(--app-text-dim);
 
-  ion-icon {
-    font-size: 56px;
-    margin-bottom: 12px;
-    opacity: 0.5;
+  .empty-badge {
+    width: 84px;
+    height: 84px;
+    border-radius: 28px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 18px;
+    background: var(--brand-gradient-soft);
+    border: 1px solid var(--app-hairline);
+
+    ion-icon {
+      font-size: 38px;
+      color: var(--brand-pink);
+    }
+  }
+
+  h2 {
+    margin: 0 0 6px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
   }
 
   p {
     margin: 0;
-    line-height: 1.4;
+    font-size: 14px;
+    line-height: 1.45;
+    max-width: 240px;
   }
 }

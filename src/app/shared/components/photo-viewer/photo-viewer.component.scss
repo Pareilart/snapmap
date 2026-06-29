@@ -1,10 +1,16 @@
 .viewer-content {
-  --background: #000;
+  --background: var(--app-ink);
+}
+
+.close-btn {
+  --color: #fff;
 }
 
 swiper-container {
   width: 100%;
   height: 100%;
+  --swiper-pagination-color: #fff;
+  --swiper-pagination-bullet-inactive-color: rgba(255, 255, 255, 0.45);
 }
 
 .slide {
@@ -12,7 +18,7 @@ swiper-container {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #000;
+  background: var(--app-ink);
 
   img {
     flex: 1;
@@ -22,21 +28,22 @@ swiper-container {
   }
 
   .info {
-    padding: 14px 16px;
-    background: #000;
+    padding: 18px 18px calc(20px + var(--ion-safe-area-bottom, 0px));
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
     color: #fff;
 
     p {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin: 4px 0;
+      gap: 9px;
+      margin: 5px 0;
       font-size: 14px;
+      font-weight: 500;
     }
 
     ion-icon {
       font-size: 18px;
-      color: var(--ion-color-primary);
+      color: var(--brand-pink);
     }
   }
 }

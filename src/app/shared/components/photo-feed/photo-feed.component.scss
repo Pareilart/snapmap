@@ -1,12 +1,63 @@
+// Feed vertical façon Instagram — dark immersif (Défi 6).
 .feed {
-  --background: #f4f5f8;
+  --background: var(--app-ink);
+}
+
+.feed-header ion-toolbar {
+  --background: rgba(11, 11, 15, 0.7);
+  backdrop-filter: var(--app-blur);
+  -webkit-backdrop-filter: var(--app-blur);
+}
+
+.close-btn {
+  --color: #fff;
 }
 
 .card {
   display: block;
-  background: #fff;
-  margin: 0 0 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 14px 12px;
+  background: var(--app-surface);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+
+    .loc {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--brand-gradient);
+      flex: none;
+    }
+
+    .loc-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .date {
+      font-size: 12px;
+      color: var(--app-text-dim);
+      flex: none;
+      margin-left: 10px;
+    }
+  }
 
   .media {
     position: relative;
@@ -16,13 +67,14 @@
     img {
       display: block;
       width: 100%;
-      max-height: 70vh;
-      object-fit: contain;
+      max-height: 62vh;
+      object-fit: cover;
       transition: filter 0.3s;
     }
 
     &.locked img {
-      filter: blur(16px);
+      filter: blur(18px) brightness(0.7);
+      transform: scale(1.08);
     }
 
     .lock-overlay {
@@ -33,48 +85,44 @@
       justify-content: center;
       align-items: center;
       gap: 10px;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.32);
 
       ion-icon {
         color: #fff;
-        font-size: 34px;
+        font-size: 32px;
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+      }
+
+      .price {
+        color: #fff;
+        font-weight: 700;
+        font-size: 13px;
+      }
+
+      .unlock {
+        --border-radius: 999px;
+        margin: 2px 0 0;
       }
     }
   }
 
-  .meta {
-    padding: 4px 12px 10px;
+  .card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px 14px;
 
-    .actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-
-      .like-btn {
-        --padding-start: 0;
-        --padding-end: 0;
-        margin: 0;
-        height: 32px;
-      }
-
-      .like-count {
-        font-weight: 600;
-        font-size: 14px;
-      }
+    .like-btn {
+      --padding-start: 0;
+      --padding-end: 0;
+      margin: 0;
+      height: 34px;
     }
 
-    .info p {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin: 2px 0;
-      font-size: 13px;
-      color: var(--ion-color-medium-shade);
-
-      ion-icon {
-        font-size: 16px;
-        color: var(--ion-color-primary);
-      }
+    .like-count {
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
     }
   }
 }

@@ -1,1 +1,37 @@
+// Barre d'onglets immersive (Défi 6) — verre dépoli sombre, accent rose Instagram.
+ion-tab-bar {
+  --background: rgba(11, 11, 15, 0.82);
+  --border: 0;
+  backdrop-filter: var(--app-blur);
+  -webkit-backdrop-filter: var(--app-blur);
+  border-top: 1px solid var(--app-hairline);
+  height: calc(56px + var(--ion-safe-area-bottom, 0px));
+  padding-top: 6px;
+  padding-bottom: var(--ion-safe-area-bottom, 0px);
+}
 
+ion-tab-button {
+  --color: #82828f;
+  --color-selected: var(--brand-pink);
+  --ripple-color: var(--brand-pink);
+
+  ion-icon {
+    font-size: 25px;
+  }
+
+  ion-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    margin-top: 2px;
+  }
+}
+
+// Léger "pop" + lueur de marque sur l'onglet actif.
+ion-tab-button.tab-selected {
+  ion-icon {
+    transform: translateY(-1px) scale(1.06);
+    filter: drop-shadow(0 3px 8px rgba(225, 48, 108, 0.55));
+    transition: transform 0.2s ease, filter 0.2s ease;
+  }
+}

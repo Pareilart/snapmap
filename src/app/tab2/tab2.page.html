@@ -1,16 +1,19 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Carte</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="map-page">
   <div class="map-ctn">
     @if (!mapLoaded) {
       <div class="loading-ctn">
-        <ion-spinner></ion-spinner>
+        <div class="map-loader">
+          <ion-spinner name="crescent"></ion-spinner>
+          <span>Localisation…</span>
+        </div>
       </div>
     }
     <div id="map" class="map"></div>
+  </div>
+
+  <!-- Header flottant en verre dépoli (style Snap Map) -->
+  <div class="map-topbar glass">
+    <ion-icon name="location"></ion-icon>
+    <span>Snap Map</span>
   </div>
 </ion-content>

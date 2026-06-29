@@ -83,6 +83,69 @@
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* SnapMap = identité immersive sombre → dark FORCÉ (indépendant du réglage OS). */
+@import '@ionic/angular/css/palettes/dark.always.css';
+
+/* ===========================================================================
+   SnapMap — helpers UI globaux (Défi 6)
+   =========================================================================== */
+
+/* Dégradé de marque appliqué à du texte (wordmark, titres). */
+.brand-text {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Surface "verre dépoli" (glassmorphism) — headers/pills flottants. */
+.glass {
+  background: rgba(22, 22, 28, 0.6);
+  backdrop-filter: var(--app-blur);
+  -webkit-backdrop-filter: var(--app-blur);
+  border: 1px solid var(--app-hairline);
+}
+
+/* Masquer la scrollbar (feeds plein écran). */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+/* Toolbars transparentes par défaut (les pages posent leur propre fond). */
+ion-toolbar {
+  --background: transparent;
+  --border-width: 0;
+  --color: #fff;
+}
+ion-title { font-weight: 800; letter-spacing: -0.01em; }
+
+/* Boutons : coins arrondis "app moderne" + pas de MAJUSCULES forcées. */
+ion-button {
+  --border-radius: 14px;
+  text-transform: none;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* Bouton plein dégradé de marque (réutilisable). */
+.btn-brand {
+  --background: transparent;
+  --background-activated: transparent;
+  --box-shadow: 0 6px 18px rgba(225, 48, 108, 0.35);
+  --color: #fff;
+  position: relative;
+  overflow: hidden;
+  &::part(native) { background: var(--brand-gradient); }
+}
+
+/* Pins photos — rendus hors Angular (divIcon Leaflet) → styles GLOBAUX.
+   Anneau blanc façon "Snap Map" + halo de marque, lisible sur fond carte sombre. */
+.photo-pin,
+.cluster-pin {
+  border: 3px solid #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(225, 48, 108, 0.5);
+}
+.cluster-pin .badge {
+  background: var(--brand-gradient) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}

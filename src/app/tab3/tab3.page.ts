@@ -1,10 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonRow, IonCol,
-  IonIcon, IonButton,
+  IonHeader, IonToolbar, IonContent, IonIcon, IonButton,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { lockClosed, lockOpen } from 'ionicons/icons';
+import { lockClosed, lockOpen, bagHandle } from 'ionicons/icons';
 import { Stripe } from '@capacitor-community/stripe';
 import { PhotoService } from '../core/services/photo.service';
 import { PaymentService } from '../core/services/payment.service';
@@ -15,8 +14,7 @@ import { FeedbackService } from '../core/services/feedback.service';
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss'],
   imports: [
-    IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonRow, IonCol,
-    IonIcon, IonButton,
+    IonHeader, IonToolbar, IonContent, IonIcon, IonButton,
   ],
 })
 export class Tab3Page implements OnInit {
@@ -27,7 +25,7 @@ export class Tab3Page implements OnInit {
   protected googlePayAvailable = false;
 
   constructor() {
-    addIcons({ lockClosed, lockOpen });
+    addIcons({ lockClosed, lockOpen, bagHandle });
   }
 
   async ngOnInit(): Promise<void> {

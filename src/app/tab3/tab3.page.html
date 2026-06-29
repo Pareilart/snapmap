@@ -1,33 +1,46 @@
-<ion-header [translucent]="true">
+<ion-header class="app-header" [translucent]="true">
   <ion-toolbar>
-    <ion-title>Boutique</ion-title>
+    <div class="shop-title" slot="start">
+      <span class="wordmark">Boutique</span>
+      <small>Débloquez vos clichés en HD</small>
+    </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-grid>
-    <ion-row>
+  @if (photoService.photos.length === 0) {
+    <div class="empty-state">
+      <div class="empty-badge"><ion-icon name="bag-handle"></ion-icon></div>
+      <h2>Boutique vide</h2>
+      <p>Prenez des selfies pour les retrouver ici.</p>
+    </div>
+  } @else {
+    <div class="shop-grid">
       @for (photo of photoService.photos; track photo.filepath) {
-        <ion-col size="6">
-          <div class="photo-card" [class.locked]="!photo.purchased">
-            <img [src]="photo.webviewPath" />
+        <div class="shop-card" [class.unlocked]="photo.purchased">
+          <img [src]="photo.webviewPath" [class.blurred]="!photo.purchased" alt="Photo" />
 
-            @if (!photo.purchased) {
-              <div class="overlay">
-                <ion-icon name="lock-closed"></ion-icon>
-                <ion-button (click)="buyPhoto(photo.filepath)">Acheter 5 € (CB)</ion-button>
+          @if (!photo.purchased) {
+            <div class="lock-layer">
+              <span class="price-pill">5 €</span>
+              <ion-icon class="lock-ic" name="lock-closed"></ion-icon>
+              <div class="buy-actions">
+                <ion-button class="btn-brand buy" expand="block" (click)="buyPhoto(photo.filepath)">
+                  Acheter
+                </ion-button>
                 @if (googlePayAvailable) {
-                  <ion-button (click)="buyPhotoWithGooglePay(photo.filepath)" color="dark">
+                  <ion-button class="gpay" expand="block" fill="outline"
+                    (click)="buyPhotoWithGooglePay(photo.filepath)">
                     Google Pay
                   </ion-button>
                 }
               </div>
-            } @else {
-              <ion-icon name="lock-open" class="unlocked-badge"></ion-icon>
-            }
-          </div>
-        </ion-col>
+            </div>
+          } @else {
+            <div class="unlocked-badge"><ion-icon name="lock-open"></ion-icon></div>
+          }
+        </div>
       }
-    </ion-row>
-  </ion-grid>
+    </div>
+  }
 </ion-content>
