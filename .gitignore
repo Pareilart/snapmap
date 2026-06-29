@@ -65,6 +65,11 @@ yarn-error.log
 testem.log
 /typings
 
+# Env / secrets (contient la clé Stripe sk_ pour le backend) — .env.example reste commité
+.env
+.env.local
+.env.*.local
+
 # System files
 .DS_Store
 Thumbs.db

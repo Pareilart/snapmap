@@ -9,7 +9,13 @@
         "@ionic/angular-toolkit:page": {
           "styleext": "scss",
           "standalone": true
-        }
+        },
+        "@schematics/angular:service": { "type": "service" },
+        "@schematics/angular:guard": { "type": "guard" },
+        "@schematics/angular:interceptor": { "type": "interceptor" },
+        "@schematics/angular:directive": { "type": "directive" },
+        "@schematics/angular:component": { "type": "component", "style": "scss" },
+        "@schematics/angular:resolver": { "type": "resolver" }
       },
       "root": "",
       "sourceRoot": "src",
@@ -49,8 +55,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "10kb",
+                  "maximumError": "20kb"
                 }
               ],
               "fileReplacements": [

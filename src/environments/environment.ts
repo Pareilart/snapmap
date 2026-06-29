@@ -1,16 +1,9 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
+// ⚠️ FICHIER GÉNÉRÉ par set-env.js depuis .env — NE PAS éditer à la main.
+// Modifier les valeurs dans .env (non commité), puis : node set-env.js (auto avant ionic build/serve).
 export const environment = {
-  production: false
+  production: false,
+  stripe: {
+    publishableKey: 'pk_test_51PbqDRGuarCBrFcPEJUOLrLDOQUlCmzPmrwoD60I9oAV7GAfDT57sDHIxMiDxesEJpb7OX8Cy9b92XAOLq4bHYUh00O0iTM7m7',
+    apiUrl: 'http://localhost:4000',
+  },
 };
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

@@ -5,6 +5,9 @@ import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalo
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 
+// Enregistre <pwa-camera-modal> dans le DOM (compatible Camera 8, sans @ionic/pwa-elements)
+import './app/components/camera-modal/camera-modal.element';
+
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
