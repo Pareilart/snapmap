@@ -15,7 +15,29 @@
     <ion-row>
       @for (photo of photoService.photos; track photo.filepath) {
         <ion-col size="6">
-          <ion-img [src]="photo.webviewPath"></ion-img>
+          <div class="photo-tile">
+            <img [src]="photo.webviewPath" alt="Selfie" />
+
+            <ion-button
+              class="action like"
+              fill="clear"
+              (click)="toggleLike(photo.filepath)"
+              [attr.aria-label]="photo.liked ? 'Retirer le like' : 'Liker'">
+              <ion-icon
+                slot="icon-only"
+                [name]="photo.liked ? 'heart' : 'heart-outline'"
+                [color]="photo.liked ? 'danger' : 'light'">
+              </ion-icon>
+            </ion-button>
+
+            <ion-button
+              class="action delete"
+              fill="clear"
+              (click)="confirmDelete(photo.filepath)"
+              aria-label="Supprimer la photo">
+              <ion-icon slot="icon-only" name="trash" color="light"></ion-icon>
+            </ion-button>
+          </div>
         </ion-col>
       }
     </ion-row>
