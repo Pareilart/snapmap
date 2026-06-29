@@ -28,6 +28,54 @@
 /* Carte Leaflet (tuiles OpenStreetMap) */
 @import 'leaflet/dist/leaflet.css';
 
+/* Clustering des photos sur la carte (Défi 3) */
+@import 'leaflet.markercluster/dist/MarkerCluster.css';
+@import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+
+/* Pins photos — rendus hors Angular (divIcon Leaflet), donc styles GLOBAUX */
+.photo-pin,
+.cluster-pin {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+}
+
+/* Pin « verrouillé » (photo communauté non achetée) → flouté sur la carte */
+.photo-pin.locked,
+.cluster-pin.locked {
+  filter: blur(4px);
+}
+
+.cluster-pin {
+  width: 54px;
+  height: 54px;
+  position: relative;
+
+  .badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 5px;
+    border-radius: 11px;
+    background: var(--ion-color-primary, #3880ff);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    box-sizing: border-box;
+  }
+}
+
 /**
  * Ionic Dark Mode
  * -----------------------------------------------------

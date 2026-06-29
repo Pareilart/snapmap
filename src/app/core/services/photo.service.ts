@@ -5,18 +5,58 @@ import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Preferences } from '@capacitor/preferences';
 import { Capacitor } from '@capacitor/core';
 import { GeolocationService } from './geolocation.service';
+import { GeocodingService } from './geocoding.service';
+import { DEMO_PHOTOS } from '../data/demo-photos';
 import type { UserPhoto } from '../models';
+
+/** Erreur typée : la permission caméra a été refusée (Défi 5). */
+export class CameraPermissionError extends Error {
+  constructor() {
+    super('CAMERA_PERMISSION_DENIED');
+    this.name = 'CameraPermissionError';
+  }
+}
 
 @Injectable({ providedIn: 'root' })
 export class PhotoService {
   private geolocation = inject(GeolocationService);
+  private geocoding = inject(GeocodingService);
 
-  /** Collection des selfies, la plus récente en tête. */
+  /** Mes selfies, le plus récent en tête. */
   public photos: UserPhoto[] = [];
+  /** Photos « de la communauté » (démo) — floutées/achetables sur la carte. */
+  public demoPhotos: UserPhoto[] = [];
   private readonly PHOTO_STORAGE = 'photos';
+  private readonly DEMO_PURCHASED_STORAGE = 'demo_purchased';
+  private readonly DEMO_LIKED_STORAGE = 'demo_liked';
+
+  /** Stat — nombre total de likes (mes photos + communauté). */
+  get totalLikes(): number {
+    return [...this.photos, ...this.demoPhotos].filter((p) => p.liked).length;
+  }
+
+  /** Toutes les photos géolocalisées de la carte : les miennes + la communauté. */
+  get mapPhotos(): UserPhoto[] {
+    return [...this.photos, ...this.demoPhotos].filter((p) => p.lat != null && p.lng != null);
+  }
+
+  /** « Verrouillée » = photo de la communauté non achetée → floutée + achetable. */
+  isLocked(photo: UserPhoto): boolean {
+    return photo.own === false && !photo.purchased;
+  }
+
+  /** Photos partageant ~la même position qu'une photo donnée (pour le feed du lieu). */
+  photosAt(target: UserPhoto): UserPhoto[] {
+    const near = (a?: number, b?: number) => a != null && b != null && Math.abs(a - b) < 0.0005;
+    return this.mapPhotos.filter((p) => near(p.lat, target.lat) && near(p.lng, target.lng));
+  }
 
   /** Prend un selfie (caméra avant), capture la position, l'écrit sur le disque et persiste. */
   public async takePhoto(): Promise<void> {
+    // Défi 5 — vérifier/demander la permission caméra AVANT d'ouvrir l'appareil,
+    // pour pouvoir afficher un message clair plutôt que de planter.
+    await this.ensureCameraPermission();
+
     const result = await Camera.takePhoto({
       quality: 100,
       cameraDirection: CameraDirection.Front, // selfies
@@ -49,15 +89,43 @@ export class PhotoService {
       }
     }
     this.photos = loaded;
+    await this.loadDemoPhotos();
   }
 
-  /** Marque une photo comme achetée (après paiement Stripe) et persiste. */
+  /** Charge les photos de démo (communauté) et restaure leur état « acheté ». */
+  public async loadDemoPhotos(): Promise<void> {
+    const purchased = await this.readIdSet(this.DEMO_PURCHASED_STORAGE);
+    const liked = await this.readIdSet(this.DEMO_LIKED_STORAGE);
+    this.demoPhotos = DEMO_PHOTOS.map((p) => ({
+      ...p,
+      purchased: purchased.has(p.filepath),
+      liked: liked.has(p.filepath),
+    }));
+  }
+
+  private async readIdSet(key: string): Promise<Set<string>> {
+    const { value } = await Preferences.get({ key });
+    return new Set<string>(value ? (JSON.parse(value) as string[]) : []);
+  }
+
+  /** Marque une photo comme achetée et persiste — la mienne OU une photo communauté. */
   public async markAsPurchased(filepath: string): Promise<void> {
-    const photo = this.photos.find((p) => p.filepath === filepath);
-    if (photo) {
-      photo.purchased = true;
+    const own = this.photos.find((p) => p.filepath === filepath);
+    if (own) {
+      own.purchased = true;
       await this.persist();
+      return;
     }
+    const demo = this.demoPhotos.find((p) => p.filepath === filepath);
+    if (demo) {
+      demo.purchased = true;
+      await this.persistDemoPurchased();
+    }
+  }
+
+  private async persistDemoPurchased(): Promise<void> {
+    const ids = this.demoPhotos.filter((p) => p.purchased).map((p) => p.filepath);
+    await Preferences.set({ key: this.DEMO_PURCHASED_STORAGE, value: JSON.stringify(ids) });
   }
 
   /** Supprime une photo (tableau + fichier disque) et persiste. (Défi 1) */
@@ -71,12 +139,55 @@ export class PhotoService {
     }
   }
 
-  /** Bascule le « like » d'une photo et persiste (rechargé au démarrage). (Défi 1) */
+  /** Bascule le « like » d'une photo et persiste — la mienne OU une photo communauté. (Défi 1) */
   public async toggleLike(filepath: string): Promise<void> {
-    const photo = this.photos.find((p) => p.filepath === filepath);
-    if (photo) {
-      photo.liked = !photo.liked;
+    const own = this.photos.find((p) => p.filepath === filepath);
+    if (own) {
+      own.liked = !own.liked;
       await this.persist();
+      return;
+    }
+    const demo = this.demoPhotos.find((p) => p.filepath === filepath);
+    if (demo) {
+      demo.liked = !demo.liked;
+      await this.persistDemoLiked();
+    }
+  }
+
+  private async persistDemoLiked(): Promise<void> {
+    const ids = this.demoPhotos.filter((p) => p.liked).map((p) => p.filepath);
+    await Preferences.set({ key: this.DEMO_LIKED_STORAGE, value: JSON.stringify(ids) });
+  }
+
+  /** Résout le nom de lieu (reverse geocoding) des photos géolocalisées, puis persiste. (Défi 2) */
+  public async ensureLocationNames(): Promise<void> {
+    let changed = false;
+    for (const photo of this.photos) {
+      if (photo.lat != null && photo.lng != null && !photo.locationName) {
+        photo.locationName = await this.geocoding.reverseGeocode(photo.lat, photo.lng);
+        changed = true;
+      }
+    }
+    if (changed) {
+      await this.persist();
+    }
+  }
+
+  /**
+   * Défi 5 — s'assure que la permission caméra est accordée (natif uniquement).
+   * Sur le web, c'est le navigateur (getUserMedia) qui gère le prompt → on ne fait rien.
+   * Lève {@link CameraPermissionError} si l'utilisateur refuse.
+   */
+  private async ensureCameraPermission(): Promise<void> {
+    if (!Capacitor.isNativePlatform()) {
+      return;
+    }
+    let status = await Camera.checkPermissions();
+    if (status.camera === 'prompt' || status.camera === 'prompt-with-rationale') {
+      status = await Camera.requestPermissions({ permissions: ['camera'] });
+    }
+    if (status.camera !== 'granted' && status.camera !== 'limited') {
+      throw new CameraPermissionError();
     }
   }
 

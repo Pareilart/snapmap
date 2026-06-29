@@ -1,6 +1,10 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Mes selfies</ion-title>
+    <div slot="end" class="likes-stat" aria-label="Nombre total de likes">
+      <ion-icon name="heart"></ion-icon>
+      <span>{{ photoService.totalLikes }}</span>
+    </div>
   </ion-toolbar>
 </ion-header>
 
@@ -13,10 +17,30 @@
 
   <ion-grid>
     <ion-row>
+      <!-- Défi 4 — chargement initial : grille de squelettes -->
+      @if (galleryLoading) {
+        @for (s of skeletons; track s) {
+          <ion-col size="6">
+            <div class="photo-tile">
+              <ion-skeleton-text [animated]="true" class="skeleton-fill"></ion-skeleton-text>
+            </div>
+          </ion-col>
+        }
+      } @else {
+        <!-- Défi 4 — capture en cours : carte squelette + loader en tête de grille -->
+        @if (processing) {
+          <ion-col size="6">
+            <div class="photo-tile">
+              <ion-skeleton-text [animated]="true" class="skeleton-fill"></ion-skeleton-text>
+              <ion-spinner class="tile-spinner" name="crescent"></ion-spinner>
+            </div>
+          </ion-col>
+        }
+
       @for (photo of photoService.photos; track photo.filepath) {
         <ion-col size="6">
           <div class="photo-tile">
-            <img [src]="photo.webviewPath" alt="Selfie" />
+            <img [src]="photo.webviewPath" alt="Selfie" (click)="openViewer($index)" />
 
             <ion-button
               class="action like"
@@ -39,6 +63,17 @@
             </ion-button>
           </div>
         </ion-col>
+      }
+
+        <!-- Défi 4 — état vide explicite quand la galerie est chargée mais sans photo -->
+        @if (!processing && photoService.photos.length === 0) {
+          <ion-col size="12">
+            <div class="empty-state">
+              <ion-icon name="camera"></ion-icon>
+              <p class="tracking-wide">Aucun selfie pour le moment.<br />Touchez le bouton caméra pour commencer.</p>
+            </div>
+          </ion-col>
+        }
       }
     </ion-row>
   </ion-grid>

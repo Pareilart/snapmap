@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ photos[0]?.locationName || 'Photos du lieu' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()" aria-label="Fermer">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="feed">
+  @for (photo of photos; track photo.filepath) {
+    <article class="card">
+      <div class="media" [class.locked]="isLocked(photo)">
+        <img [src]="photo.webviewPath" alt="Photo" />
+        @if (isLocked(photo)) {
+          <div class="lock-overlay">
+            <ion-icon name="lock-closed"></ion-icon>
+            <ion-button size="small" (click)="buy(photo)">Acheter 5 €</ion-button>
+          </div>
+        }
+      </div>
+
+      <div class="meta">
+        <div class="actions">
+          <ion-button
+            class="like-btn"
+            fill="clear"
+            (click)="toggleLike(photo)"
+            [attr.aria-label]="photo.liked ? 'Retirer le like' : 'Liker'">
+            <ion-icon
+              slot="icon-only"
+              [name]="photo.liked ? 'heart' : 'heart-outline'"
+              [color]="photo.liked ? 'danger' : 'medium'">
+            </ion-icon>
+          </ion-button>
+          <span class="like-count">{{ likeCount(photo) }} j'aime</span>
+        </div>
+
+        <div class="info">
+          <p>
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ formatDate(photo.takenAt) }}</span>
+          </p>
+          <p>
+            <ion-icon name="location-outline"></ion-icon>
+            <span>{{ photo.locationName || 'Localisation…' }}</span>
+          </p>
+        </div>
+      </div>
+    </article>
+  }
+</ion-content>

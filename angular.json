@@ -51,9 +51,9 @@
                 "output": "assets/stripe-pwa-elements"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss"],
+            "styles": ["src/global.scss", "src/theme/variables.scss", "src/tailwind.css"],
             "scripts": [],
-            "allowedCommonJsDependencies": ["leaflet"],
+            "allowedCommonJsDependencies": ["leaflet", "leaflet.markercluster"],
             "browser": "src/main.ts"
           },
           "configurations": {
@@ -126,7 +126,7 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss"],
+            "styles": ["src/global.scss", "src/theme/variables.scss", "src/tailwind.css"],
             "scripts": []
           },
           "configurations": {

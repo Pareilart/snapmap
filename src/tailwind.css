@@ -1,0 +1,18 @@
+/*
+ * Tailwind CSS v4 — intégration Ionic.
+ *
+ * ⚠️ On N'importe PAS le "Preflight" (reset CSS de Tailwind) : il réinitialise
+ * marges, bordures et typographie sur TOUS les éléments et casserait le thème
+ * des composants Ionic. On ne garde donc que le `theme` (variables/tokens) et
+ * les `utilities` (classes `flex`, `p-4`, `gap-2`, `rounded-xl`, ...).
+ *
+ * Rappel : les classes Tailwind ne traversent pas le Shadow DOM des `ion-*`.
+ * Elles s'appliquent à tes éléments (div, img, overlays...) et au host des ion-*.
+ *
+ * Fichier en .css (et non global.scss) volontairement : la directive
+ * `@import "tailwindcss/..."` doit être traitée par PostCSS, pas par Sass.
+ */
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);

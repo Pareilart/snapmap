@@ -8,6 +8,7 @@ import { lockClosed, lockOpen } from 'ionicons/icons';
 import { Stripe } from '@capacitor-community/stripe';
 import { PhotoService } from '../core/services/photo.service';
 import { PaymentService } from '../core/services/payment.service';
+import { FeedbackService } from '../core/services/feedback.service';
 
 @Component({
   selector: 'app-tab3',
@@ -21,6 +22,7 @@ import { PaymentService } from '../core/services/payment.service';
 export class Tab3Page implements OnInit {
   photoService = inject(PhotoService);
   private paymentService = inject(PaymentService);
+  private feedback = inject(FeedbackService);
   /** Google Pay n'est disponible que sur Android (avec Google Pay configuré). */
   protected googlePayAvailable = false;
 
@@ -40,16 +42,26 @@ export class Tab3Page implements OnInit {
   }
 
   async buyPhoto(filepath: string): Promise<void> {
-    const success = await this.paymentService.buyPhoto();
-    if (success) {
-      await this.photoService.markAsPurchased(filepath);
-    }
+    await this.runPayment(() => this.paymentService.buyPhoto(), filepath);
   }
 
   async buyPhotoWithGooglePay(filepath: string): Promise<void> {
-    const success = await this.paymentService.buyPhotoWithGooglePay();
-    if (success) {
-      await this.photoService.markAsPurchased(filepath);
+    await this.runPayment(() => this.paymentService.buyPhotoWithGooglePay(), filepath);
+  }
+
+  /** Défi 4 — exécute un paiement et renvoie un feedback clair (succès / annulation / erreur). */
+  private async runPayment(pay: () => Promise<boolean>, filepath: string): Promise<void> {
+    try {
+      const success = await pay();
+      if (success) {
+        await this.photoService.markAsPurchased(filepath);
+        await this.feedback.success('Paiement réussi — photo débloquée');
+      } else {
+        await this.feedback.info('Paiement annulé.');
+      }
+    } catch (err) {
+      console.error('Paiement échoué:', err);
+      await this.feedback.error('Le paiement a échoué. Réessayez plus tard.');
     }
   }
 }

@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
 import * as L from 'leaflet';
+import 'leaflet.markercluster';
+import type { UserPhoto } from '../models';
+
+/** Options de marqueur enrichies : miniature + photo (lues par le cluster / le clic). */
+type PhotoMarkerOptions = L.MarkerOptions & { photoThumb?: string; photo?: UserPhoto };
 
 // Icônes Leaflet servies en LOCAL (copiées dans assets/leaflet via angular.json).
 // On définit une icône CUSTOM (L.icon) comme marqueur par défaut, au lieu de
@@ -23,6 +28,7 @@ export class MapService {
   static readonly DEFAULT_POSITION = { lat: 48.8566, lng: 2.3522 };
 
   map: L.Map | undefined;
+  private photoCluster: L.MarkerClusterGroup | undefined;
   private readonly tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
   private readonly attribution = '© OpenStreetMap contributors';
 
@@ -47,5 +53,76 @@ export class MapService {
   /** Leaflet attend [lat, lng] (≠ Mapbox). */
   addMarker(lat: number, lng: number): L.Marker {
     return L.marker([lat, lng]).addTo(this.map!);
+  }
+
+  /**
+   * Affiche chaque photo géolocalisée en pin rond (miniature), **floutée si verrouillée**
+   * (photo communauté non achetée), avec clustering (badge du nombre, « 99+ »).
+   * Clic sur un **pin** ou un **cluster** → ouvre le **feed du lieu** via `onOpenFeed`. (Défi 3 + marketplace)
+   */
+  renderPhotoMarkers(photos: UserPhoto[], onOpenFeed: (photos: UserPhoto[]) => void): void {
+    if (!this.map) {
+      return;
+    }
+
+    // Reset : on retire l'ancien groupe avant de redessiner (évite les doublons).
+    if (this.photoCluster) {
+      this.map.removeLayer(this.photoCluster);
+    }
+
+    this.photoCluster = L.markerClusterGroup({
+      showCoverageOnHover: false,
+      zoomToBoundsOnClick: false, // clic cluster → feed du lieu (pas un simple zoom)
+      maxClusterRadius: 50,
+      iconCreateFunction: (cluster) => {
+        const count = cluster.getChildCount();
+        const first = cluster.getAllChildMarkers()[0]?.options as PhotoMarkerOptions | undefined;
+        const thumb = first?.photoThumb ?? '';
+        const locked = first?.photo ? this.isLocked(first.photo) : false;
+        const label = count > 99 ? '99+' : String(count); // « 99+ » pour éviter un nombre trop gros
+        return L.divIcon({
+          html: `<div class="cluster-pin${locked ? ' locked' : ''}" style="background-image:url('${thumb}')"><span class="badge">${label}</span></div>`,
+          className: 'photo-cluster',
+          iconSize: [54, 54],
+          iconAnchor: [27, 27],
+        });
+      },
+    });
+
+    // Clic sur un cluster → feed de toutes ses photos.
+    this.photoCluster.on('clusterclick', (e) => {
+      const cluster = (e as unknown as { layer: L.MarkerCluster }).layer;
+      const list = cluster
+        .getAllChildMarkers()
+        .map((m) => (m.options as PhotoMarkerOptions).photo)
+        .filter((p): p is UserPhoto => !!p);
+      onOpenFeed(list);
+    });
+
+    for (const photo of photos) {
+      if (photo.lat == null || photo.lng == null) {
+        continue; // photo sans localisation → pas sur la carte
+      }
+      const locked = this.isLocked(photo);
+      const icon = L.divIcon({
+        html: `<div class="photo-pin${locked ? ' locked' : ''}" style="background-image:url('${photo.webviewPath}')"></div>`,
+        className: 'photo-marker',
+        iconSize: [44, 44],
+        iconAnchor: [22, 22],
+      });
+      const marker = L.marker([photo.lat, photo.lng], { icon });
+      const opts = marker.options as PhotoMarkerOptions;
+      opts.photoThumb = photo.webviewPath;
+      opts.photo = photo;
+      marker.on('click', () => onOpenFeed([photo]));
+      this.photoCluster.addLayer(marker);
+    }
+
+    this.map.addLayer(this.photoCluster);
+  }
+
+  /** Verrouillée = photo communauté non achetée (floutée + achetable). */
+  private isLocked(photo: UserPhoto): boolean {
+    return photo.own === false && !photo.purchased;
   }
 }

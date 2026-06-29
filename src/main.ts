@@ -9,6 +9,10 @@ import { AppComponent } from './app/app.component';
 // Enregistre <pwa-camera-modal> dans le DOM (compatible Camera 8, sans @ionic/pwa-elements)
 import './app/components/camera-modal/camera-modal.element';
 
+// Enregistre les web components Swiper (<swiper-container>/<swiper-slide>) — carrousel du Défi 2.
+import { register as registerSwiper } from 'swiper/element/bundle';
+registerSwiper();
+
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

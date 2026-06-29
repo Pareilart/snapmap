@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Photo</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()" aria-label="Fermer">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="viewer-content">
+  <swiper-container [attr.initial-slide]="index" pagination="true">
+    @for (photo of photos; track photo.filepath) {
+      <swiper-slide>
+        <div class="slide">
+          <img [src]="photo.webviewPath" alt="Selfie" />
+          <div class="info">
+            <p>
+              <ion-icon name="calendar-outline"></ion-icon>
+              <span>{{ formatDate(photo.takenAt) }}</span>
+            </p>
+            <p>
+              <ion-icon name="location-outline"></ion-icon>
+              @if (photo.lat != null && photo.lng != null) {
+                <span>{{ photo.locationName || 'Localisation…' }}</span>
+              } @else {
+                <span>Sans localisation</span>
+              }
+            </p>
+          </div>
+        </div>
+      </swiper-slide>
+    }
+  </swiper-container>
+</ion-content>

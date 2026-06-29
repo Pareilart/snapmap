@@ -14,4 +14,8 @@ export interface UserPhoto {
   lng?: number;
   takenAt: string; // date ISO — new Date().toISOString()
   locationName?: string;
+  /** false = photo « de la communauté » (démo, floutée + achetable). Absent/true = la mienne. */
+  own?: boolean;
+  /** Nombre de « j'aime » de base (social proof des photos communauté). */
+  likes?: number;
 }
