@@ -29,5 +29,10 @@
   --color-brand-pink: #e1306c;
   --color-brand-orange: #f77737;
   --color-snap: #fffc00;
+  --color-gold: #f5c542;
+  --color-danger: #ff3b5c;
+  --color-success: #22c55e;
+  --radius-tile: 18px;
+  --radius-card: 20px;
   --font-display: "Plus Jakarta Sans", sans-serif;
 }

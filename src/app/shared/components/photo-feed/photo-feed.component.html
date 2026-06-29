@@ -13,9 +13,16 @@
   @for (photo of photos; track photo.filepath) {
     <article class="card">
       <header class="card-head">
-        <div class="loc">
-          <span class="dot"></span>
-          <span class="loc-name">{{ photo.locationName || 'Localisation…' }}</span>
+        <div class="avatar" [class.community]="photo.own === false">
+          <span class="lumen-ring"></span>
+          <img [src]="photo.webviewPath" alt="" />
+        </div>
+        <div class="head-text">
+          <span class="username">{{ photo.own === false ? 'Communauté' : 'Toi' }}</span>
+          <span class="loc-line">
+            <ion-icon name="location-outline"></ion-icon>
+            <span>{{ photo.locationName || 'Localisation…' }}</span>
+          </span>
         </div>
         <span class="date">{{ formatDate(photo.takenAt) }}</span>
       </header>
@@ -43,7 +50,7 @@
             [color]="photo.liked ? 'danger' : 'light'">
           </ion-icon>
         </ion-button>
-        <span class="like-count">{{ likeCount(photo) }} j'aime</span>
+        <span class="like-count"><span class="tnum">{{ likeCount(photo) }}</span> j'aime</span>
       </footer>
     </article>
   }

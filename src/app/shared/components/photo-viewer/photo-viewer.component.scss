@@ -4,6 +4,14 @@
 
 .close-btn {
   --color: #fff;
+  --padding-start: 0;
+  --padding-end: 0;
+
+  &::part(native) {
+    background: rgba(255, 255, 255, 0.14);
+    border-radius: 50%;
+    backdrop-filter: blur(8px);
+  }
 }
 
 swiper-container {

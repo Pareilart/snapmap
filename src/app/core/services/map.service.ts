@@ -52,9 +52,15 @@ export class MapService {
     });
   }
 
-  /** Leaflet attend [lat, lng] (≠ Mapbox). */
+  /** Position de l'utilisateur — point lumineux pulsé (style "Snap Map"), pas le pin rouge par défaut. */
   addMarker(lat: number, lng: number): L.Marker {
-    return L.marker([lat, lng]).addTo(this.map!);
+    const icon = L.divIcon({
+      html: '<div class="user-dot"></div>',
+      className: 'user-marker',
+      iconSize: [22, 22],
+      iconAnchor: [11, 11],
+    });
+    return L.marker([lat, lng], { icon }).addTo(this.map!);
   }
 
   /**
@@ -106,8 +112,12 @@ export class MapService {
         continue; // photo sans localisation → pas sur la carte
       }
       const locked = this.isLocked(photo);
+      const own = photo.own !== false; // mes photos vs communauté
+      const cls = `photo-pin ${own ? 'own' : 'community'}${locked ? ' locked' : ''}`;
       const icon = L.divIcon({
-        html: `<div class="photo-pin${locked ? ' locked' : ''}" style="background-image:url('${photo.webviewPath}')"></div>`,
+        html: `<div class="${cls}" style="background-image:url('${photo.webviewPath}')">${
+          locked ? '<span class="pin-lock"></span>' : ''
+        }</div>`,
         className: 'photo-marker',
         iconSize: [44, 44],
         iconAnchor: [22, 22],

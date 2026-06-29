@@ -22,10 +22,10 @@
 
           @if (!photo.purchased) {
             <div class="lock-layer">
-              <span class="price-pill">5 €</span>
+              <span class="price-pill tnum">5 €</span>
               <ion-icon class="lock-ic" name="lock-closed"></ion-icon>
               <div class="buy-actions">
-                <ion-button class="btn-brand buy" expand="block" (click)="buyPhoto(photo.filepath)">
+                <ion-button class="cta buy" expand="block" (click)="buyPhoto(photo.filepath)">
                   Acheter
                 </ion-button>
                 @if (googlePayAvailable) {
@@ -37,7 +37,10 @@
               </div>
             </div>
           } @else {
-            <div class="unlocked-badge"><ion-icon name="lock-open"></ion-icon></div>
+            <div class="owned-pill">
+              <ion-icon name="checkmark-circle"></ion-icon>
+              <span>Acheté</span>
+            </div>
           }
         </div>
       }

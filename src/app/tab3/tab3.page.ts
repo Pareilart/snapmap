@@ -3,7 +3,7 @@ import {
   IonHeader, IonToolbar, IonContent, IonIcon, IonButton,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { lockClosed, lockOpen, bagHandle } from 'ionicons/icons';
+import { lockClosed, lockOpen, bagHandle, checkmarkCircle } from 'ionicons/icons';
 import { Stripe } from '@capacitor-community/stripe';
 import { PhotoService } from '../core/services/photo.service';
 import { PaymentService } from '../core/services/payment.service';
@@ -25,7 +25,7 @@ export class Tab3Page implements OnInit {
   protected googlePayAvailable = false;
 
   constructor() {
-    addIcons({ lockClosed, lockOpen, bagHandle });
+    addIcons({ lockClosed, lockOpen, bagHandle, checkmarkCircle });
   }
 
   async ngOnInit(): Promise<void> {

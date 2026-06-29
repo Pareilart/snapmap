@@ -95,6 +95,7 @@
     right: 8px;
     ion-icon.is-liked {
       color: var(--brand-pink);
+      animation: like-pop 0.28s var(--ease-spring);
     }
   }
 
